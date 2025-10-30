@@ -16,10 +16,28 @@
 
         <h1 class="hidden">Herkkuja!</h1>
 
+        <h2 id="welcome">Tervetuloa selailemaan herkkuja!</h2>
+
+        <button class="hidden" onclick="logOut()">Logout</button>
+
         <div class="hidden" id="sisältö"></div>
         </center>
 
         <script>
+
+            const savedPin = localStorage.getItem("pinkoodi")
+            if (savedPin != null && savedPin != undefined) {
+                showElements()
+            }
+
+            //------------Log out--------------------------------------------------
+
+            function logOut() {
+                localStorage.clear()
+                window.location.reload()  //eli sama kuin refresh-nappi selaimessa
+            }
+
+
             //---------------------pin koodin tarkistus---------------------------------
             async function checkPin() {
                 var pin = document.getElementById("pin").value
@@ -27,18 +45,31 @@
                 const correctPin = await response.json()
 
                 if (pin == correctPin) {
-                    var hiddenElements = document.getElementsByClassName("hidden")
-                        for (i=0; i < hiddenElements.length; i++){
-                            hiddenElements[i].style.visibility = "visible"
-                        }
-                        document.getElementById("pin-div").style.visibility = "hidden"
-                    }
-                
-                else {
-                    alert("Väärä pin-koodi")
+                    //kirjoittaminen localstorageen:
+                    localStorage.setItem("pinkoodi", pin)
+                    showElements()
+                    //Tervehdysteksti esille
+                    document.getElementById("welcome").style.visibility = "visible"
+                    // Tervehdysteksti piiloon 4 sek kuluttua
+                    setTimeout(() => {
+                        document.getElementById("welcome").style.visibility = "hidden"
+                    }, 4000);  //millisekunteja
+                }
+                    else {
+                        alert("Väärä pin-koodi")
                 }
             }
-                
+            
+            //---------------------show elements----------------------------------
+
+                function showElements() {
+                    var hiddenElements = document.getElementsByClassName("hidden")
+                    for (i=0; i < hiddenElements.length; i++){
+                    hiddenElements[i].style.visibility = "visible"
+                    document.getElementById("pin-div").style.visibility = "hidden"
+                    }
+                }
+
 
             //--------------------------------Datan haku---------------------------
             async function fetchData() {
