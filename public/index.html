@@ -2,15 +2,45 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Herkkuja</title>
+        <title>Herkut</title>
+        <link rel="stylesheet" href="style.css"/>
     </head>
+
     <body>
         <center>
-        <h1>Herkkuja!</h1>
-        <div id="sisältö"></div>
+
+            <div id="pin-div">
+                <input id="pin" placeholder="pin code" type="password" />
+                <button onclick="checkPin()">login</button>
+            </div>
+
+        <h1 class="hidden">Herkkuja!</h1>
+
+        <div class="hidden" id="sisältö"></div>
         </center>
 
         <script>
+            //---------------------pin koodin tarkistus---------------------------------
+            async function checkPin() {
+                var pin = document.getElementById("pin").value
+                const response = await fetch("http://localhost:3000/api/getpin")
+                const correctPin = await response.json()
+
+                if (pin == correctPin) {
+                    var hiddenElements = document.getElementsByClassName("hidden")
+                        for (i=0; i < hiddenElements.length; i++){
+                            hiddenElements[i].style.visibility = "visible"
+                        }
+                        document.getElementById("pin-div").style.visibility = "hidden"
+                    }
+                
+                else {
+                    alert("Väärä pin-koodi")
+                }
+            }
+                
+
+            //--------------------------------Datan haku---------------------------
             async function fetchData() {
             document.getElementById("sisältö").innerHTML = "<h4>Ladataan herkkuja...<h4>"
             
